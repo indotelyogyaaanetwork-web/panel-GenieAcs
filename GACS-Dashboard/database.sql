@@ -1,0 +1,38 @@
+SET NAMES utf8mb4;
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role ENUM('admin','viewer') NOT NULL DEFAULT 'admin',
+  must_change TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS settings (
+  `key` VARCHAR(64) PRIMARY KEY,
+  `value` TEXT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS devices (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  serial_number VARCHAR(64) NOT NULL UNIQUE,
+  genie_id VARCHAR(255) NULL,
+  type ENUM('onu','odp','odc','olt','server') NOT NULL DEFAULT 'onu',
+  mac VARCHAR(32) NULL, ip VARCHAR(45) NULL, ssid VARCHAR(64) NULL, pppoe VARCHAR(128) NULL,
+  rx_signal DECIMAL(6,2) NULL, temp DECIMAL(5,1) NULL, clients SMALLINT NOT NULL DEFAULT 0,
+  status ENUM('online','offline') NOT NULL DEFAULT 'offline',
+  last_online DATETIME NULL,
+  lat DECIMAL(10,7) NULL, lng DECIMAL(10,7) NULL,
+  INDEX idx_type_status (type, status), INDEX idx_mac (mac), INDEX idx_ip (ip)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS logs (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  device_id INT NULL, action VARCHAR(100) NOT NULL, detail VARCHAR(255) NULL,
+  `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_dev (device_id), INDEX idx_ts (`timestamp`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- Tambahan (di luar skema minimal): menyimpan garis topologi peta
+CREATE TABLE IF NOT EXISTS topology (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL DEFAULT 'Link',
+  points LONGTEXT NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

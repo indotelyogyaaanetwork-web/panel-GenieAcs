@@ -1,0 +1,10 @@
+{
+  "name": "mostech/gacs-dashboard",
+  "description": "GACS Dashboard v1.1.0-beta - monitoring jaringan GenieACS",
+  "type": "project",
+  "require": {
+    "php": ">=8.3",
+    "ext-mysqli": "*", "ext-json": "*", "ext-curl": "*", "ext-mbstring": "*", "ext-xml": "*", "ext-openssl": "*",
+    "evilfreelancer/routeros-api-php": "^1.5"
+  }
+}
